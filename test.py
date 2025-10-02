@@ -12,7 +12,7 @@ system_message = (
     "connection."
 )
 sm = SystemMessage(system_message)
-hm = HumanMessage("How much power are the panels producing?")
+hm = HumanMessage("what is the instantaneous performance ratio of my solar panels?")
 #res = agent.invoke({"messages": [sm, hm]})
 #print(res["messages"][-1].content)
 
