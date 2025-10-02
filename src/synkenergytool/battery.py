@@ -35,8 +35,8 @@ def battery_state(inverter_serial_number: Optional[int] = 0) -> Battery:
         Battery: A Battery object containing the following fields:
             - bmsSoc (int): Battery state of charge as a percentage (0-100%)
             - bmsVolt (float): Battery voltage measured by the BMS in Volts
-            - power (int): Power flow in Watts. Negative means discharging (power flows from the battery),
-                           positive means charging (power flows into the battery)
+            - power (int): Power flow in Watts. Positive implies that the battery is discharging (power flows from the battery),
+                           negative implies that the battery is charging (power flows into the battery)
             - temp (float): Battery temperature in Celsius
             - voltage (float): Battery voltage measured by the inverter in Volts
 
@@ -56,5 +56,6 @@ def battery_state(inverter_serial_number: Optional[int] = 0) -> Battery:
         if k in Battery.model_fields.keys():
             battery[k] = b[k]
     battery["isCharging"] = b["power"] < 0
-    battery["power"] = -b["power"]
+    #battery["power"] = -b["power"]
+    
     return Battery(**battery)
