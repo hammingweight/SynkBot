@@ -1,6 +1,5 @@
 import json
 import subprocess
-import time
 from pydantic import BaseModel, Field
 from typing import Optional
 
@@ -69,9 +68,12 @@ def inverter_update(
 
     Args:
         inverter_serial_number (Optional[int], optional): Serial number of the inverter. Defaults to 0.
-        minimum_battery_soc (Optional[int], optional): Minimum battery state of charge (SOC) to set. If None, this option is omitted.
-        essential_only (Optional[bool], optional): If True, enables essential-only mode; if False, disables it; if None, this option is omitted.
-        grid_charge (Optional[bool], optional): If True, enables grid charging; if False, disables it; if None, this option is omitted.
+        minimum_battery_soc (Optional[int], optional): Minimum battery state of charge (SOC) to set. If None, this
+                                                       option is omitted.
+        essential_only (Optional[bool], optional): If True, enables essential-only mode; if False, disables it; if
+                                                   None, this option is omitted.
+        grid_charge (Optional[bool], optional): If True, enables grid charging; if False, disables it; if None, this
+                                                option is omitted.
     """
     cmd = "synkctl inverter update"
     if inverter_serial_number:
