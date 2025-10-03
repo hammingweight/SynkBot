@@ -5,16 +5,24 @@ from langgraph.prebuilt import create_react_agent
 from synkenergytool import (
     battery_state,
     grid_state,
-    input_state, 
+    input_state,
     inverter_settings,
     inverter_update,
-    load_state
+    load_state,
 )
 
 llm = ChatOllama(model="qwen3:4b-q4_K_M")
 
 agent = create_react_agent(
-    model=llm, tools=[battery_state, grid_state, input_state, inverter_settings, inverter_update, load_state]
+    model=llm,
+    tools=[
+        battery_state,
+        grid_state,
+        input_state,
+        inverter_settings,
+        inverter_update,
+        load_state,
+    ],
 )
 system_message = (
     "You are an assistant that answers questions about a user's photovoltaic system "
