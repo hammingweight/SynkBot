@@ -10,7 +10,9 @@ class Battery(BaseModel):
     bmsVolt: float = Field(
         description="The battery voltage according to the battery management system (BMS)"
     )
-    isCharging: bool = Field(description="True if the battery is charging; False if discharging")
+    isCharging: bool = Field(
+        description="True if the battery is charging; False if discharging"
+    )
     power: int = Field(
         description="""
                        The power flowing into or out of the battery in Watts.
@@ -28,7 +30,7 @@ def battery_state(inverter_serial_number: Optional[int] = 0) -> Battery:
     Gets the state of a battery.
 
     Args:
-        inverter_serial_number (Optional[str]): The serial number of an inverter that the battery to is connected to. 
+        inverter_serial_number (Optional[str]): The serial number of an inverter that the battery to is connected to.
         If not provided, returns the battery state for the default inverter.
 
     Returns:
@@ -56,6 +58,6 @@ def battery_state(inverter_serial_number: Optional[int] = 0) -> Battery:
         if k in Battery.model_fields.keys():
             battery[k] = b[k]
     battery["isCharging"] = b["power"] < 0
-    #battery["power"] = -b["power"]
-    
+    # battery["power"] = -b["power"]
+
     return Battery(**battery)
