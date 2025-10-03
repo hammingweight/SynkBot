@@ -2,12 +2,12 @@
 from langchain_core.messages import SystemMessage, HumanMessage
 from langchain_ollama import ChatOllama
 from langgraph.prebuilt import create_react_agent
-from synkenergytool import battery_state, grid_state, input_state, load_state
+from synkenergytool import battery_state, grid_state, input_state, inverter_settings, load_state
 
 llm = ChatOllama(model="qwen3:4b-q4_K_M")
 
 agent = create_react_agent(
-    model=llm, tools=[battery_state, grid_state, input_state, load_state]
+    model=llm, tools=[battery_state, grid_state, input_state, inverter_settings, load_state]
 )
 system_message = (
     "You are an assistant that answers questions about a user's photovoltaic system "
@@ -18,7 +18,7 @@ system_message = (
 )
 sm = SystemMessage(system_message)
 hm = HumanMessage(
-    "How much power is my home using?"
+    "Can I power two kettles from my inverter?"
 )
 # res = agent.invoke({"messages": [sm, hm]})
 # print(res["messages"][-1].content)
