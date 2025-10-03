@@ -33,8 +33,8 @@ system_message = (
 )
 sm = SystemMessage(system_message)
 hm = HumanMessage(
-    "Check how much power the solar panels are producing. If they are producing more than 1 kW ensure "
-    "that the inverter is powering both essential and non-essential loads."
+    "Check how much power the solar panels are producing. If they are producing more than 1 kW then "
+    "update the inverter to power both essential and non-essential loads."
 )
 # res = agent.invoke({"messages": [sm, hm]})
 # print(res["messages"][-1].content)
