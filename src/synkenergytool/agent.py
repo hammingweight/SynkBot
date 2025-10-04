@@ -47,17 +47,20 @@ def react(state: State):
             ("human", "{question}"),
         ]
     )
+
     messages = prompt.invoke(
         {"history": state["messages"], "question": state["question"]}
     )
-    print(len(messages.to_messages()))
-    print(messages.to_messages())
-    print("====================================")
-    response = agent.invoke({"messages": messages.to_messages()})
-    return {"messages": [HumanMessage(state["question"]), response["messages"][-1]]}
+
+    for event in agent.stream({"messages": messages.to_messages()}):
+        message = event["messages"][-1]
+        message.pretty_print()
+
+    return {"messages": [HumanMessage(state["question"]), message]}
 
 
 graph_builder = StateGraph(State)
+
 graph_builder.add_node("react", react)
 
 graph_builder.add_edge(START, "react")
