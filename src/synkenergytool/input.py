@@ -1,5 +1,6 @@
 import json
 import subprocess
+from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 from typing import Optional
 
@@ -9,6 +10,7 @@ class Input(BaseModel):
     peakPower: int = Field(description="The peak power that the input can produce")
 
 
+@tool(parse_docstring=True)
 def input_state(inverter_serial_number: Optional[int] = 0) -> Input:
     """
     Retrieves the current input state (e.g. for solar panels) for a specified inverter.

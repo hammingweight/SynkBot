@@ -1,5 +1,6 @@
 import json
 import subprocess
+from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 from typing import Optional
 
@@ -8,6 +9,7 @@ class Load(BaseModel):
     power: int = Field(description="The power being consumed")
 
 
+@tool(parse_docstring=True)
 def load_state(inverter_serial_number: Optional[int] = 0) -> Load:
     """
     Retrieves the load connected to a specified inverter.

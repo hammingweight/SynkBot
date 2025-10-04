@@ -1,5 +1,6 @@
 import json
 import subprocess
+from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 from typing import Optional
 
@@ -9,6 +10,7 @@ class Grid(BaseModel):
     isUp: bool = Field(description="Whether the electricity grid is up")
 
 
+@tool(parse_docstring=True)
 def grid_state(inverter_serial_number: Optional[int] = 0) -> Grid:
     """
     Retrieves the current grid state for a specified inverter.

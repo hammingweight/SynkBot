@@ -1,5 +1,6 @@
 import json
 import subprocess
+from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 from typing import Optional
 
@@ -25,6 +26,7 @@ class Inverter(BaseModel):
     )
 
 
+@tool(parse_docstring=True)
 def inverter_settings(inverter_serial_number: Optional[int] = 0) -> Inverter:
     """
     Retrieves inverter load settings using the synkctl CLI tool.
@@ -86,6 +88,7 @@ def inverter_settings(inverter_serial_number: Optional[int] = 0) -> Inverter:
     return Inverter(**inverter)
 
 
+@tool(parse_docstring=True)
 def inverter_update(
     inverter_serial_number: Optional[int] = 0,
     minimum_battery_soc: Optional[int] = None,

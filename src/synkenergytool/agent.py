@@ -14,18 +14,15 @@ from .inverter import inverter_settings, inverter_update
 from .load import load_state
 
 llm = ChatOllama(model="qwen3:4b-q4_K_M")
-
-agent = create_react_agent(
-    model=llm,
-    tools=[
-        battery_state,
-        grid_state,
-        input_state,
-        inverter_settings,
-        inverter_update,
-        load_state,
-    ],
-)
+tools = [
+    battery_state,
+    grid_state,
+    input_state,
+    inverter_settings,
+    inverter_update,
+    load_state,
+]
+agent = create_react_agent(model=llm, tools=tools)
 
 
 class State(TypedDict):
@@ -37,8 +34,9 @@ def react(state: State):
     system_prompt = (
         "You are an assistant that answers questions about a user's photovoltaic system "
         "including an inverter, batteries, input (e.g. solar panels), load and grid "
-        "connection. The inverter is manufactured by SunSynk. You do not have access to historic data."
-        "You can only access current data about the inverter, battery, grid and panels."
+        "connection. The inverter is manufactured by SunSynk. You do not have access to historic data, "
+        "aggregate data or trends. You can only access current, instantaneous data about the inverter, "
+        "battery, grid and panels."
     )
     prompt = ChatPromptTemplate.from_messages(
         [
@@ -52,17 +50,19 @@ def react(state: State):
         {"history": state["messages"], "question": state["question"]}
     )
 
+    # Write the messages to the console so the user can see the reasoning
+    # and acting.
     for event in agent.stream({"messages": messages.to_messages()}):
         message = event["messages"][-1]
         message.pretty_print()
 
+    # Add the user's question and the AI's message to the history.
     return {"messages": [HumanMessage(state["question"]), message]}
 
 
+# Construct a chatbot
 graph_builder = StateGraph(State)
-
 graph_builder.add_node("react", react)
-
 graph_builder.add_edge(START, "react")
 graph_builder.add_edge("react", END)
 

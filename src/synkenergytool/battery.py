@@ -15,10 +15,10 @@ class Battery(BaseModel):
     )
     power: int = Field(
         description="""
-                       The power flowing into or out of the battery in Watts.
-                       If positive, power is flowing into the battery; i.e. charging.
-                       If negative, power is flowing from the battery; i.e. discharging.
-                       """
+                    The power flowing into or out of the battery in Watts.
+                    If positive, power is flowing into the battery; i.e. charging.
+                    If negative, power is flowing from the battery; i.e. discharging.
+                    """
     )
     temp: float = Field(description="The battery temperature in Celsius")
     voltage: float = Field(description="The battery voltage according to the inverter")
