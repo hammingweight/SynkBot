@@ -16,8 +16,8 @@ class Battery(BaseModel):
     power: int = Field(
         description="""
                        The power flowing into or out of the battery in Watts.
-                       If positive, power is flowing from the battery; i.e. discharging.
-                       If negative, power is flowing into the battery; i.e. charging.
+                       If positive, power is flowing into the battery; i.e. charging.
+                       If negative, power is flowing from the battery; i.e. discharging.
                        """
     )
     temp: float = Field(description="The battery temperature in Celsius")
@@ -27,7 +27,8 @@ class Battery(BaseModel):
 @tool(parse_docstring=True)
 def battery_state(inverter_serial_number: Optional[int] = 0) -> Battery:
     """
-    Gets the state of a battery.
+    Gets the state of a battery including the battery state of charge, temperature, voltage, whether the battery is
+    charging or discharging and the power flow into the battery or the power flow from the battery.
 
     Args:
         inverter_serial_number (Optional[str]): The serial number of an inverter that the battery to is connected to.
@@ -37,15 +38,10 @@ def battery_state(inverter_serial_number: Optional[int] = 0) -> Battery:
         Battery: A Battery object containing the following fields:
             - bmsSoc (int): Battery state of charge as a percentage (0-100%)
             - bmsVolt (float): Battery voltage measured by the BMS in Volts
-            - power (int): Power flow in Watts. Positive implies that the battery is discharging (power flows from
-                           the battery), negative implies that the battery is charging (power flows into the battery)
+            - power (int): Power flow in Watts. Positive implies that the battery is charging (power flows into
+                           the battery), negative implies the battery is discharging (power flows from the battery). 
             - temp (float): Battery temperature in Celsius
             - voltage (float): Battery voltage measured by the inverter in Volts
-
-    Example:
-        >>> battery = mocked_battery_state(12345)
-        >>> print(battery.bmsSoc)
-        84
     """
     cmd = "synkctl battery get --short"
     if inverter_serial_number:
@@ -58,6 +54,6 @@ def battery_state(inverter_serial_number: Optional[int] = 0) -> Battery:
         if k in Battery.model_fields.keys():
             battery[k] = b[k]
     battery["isCharging"] = b["power"] < 0
-    # battery["power"] = -b["power"]
+    battery["power"] = -b["power"]
 
     return Battery(**battery)
