@@ -39,7 +39,7 @@ def battery_state(inverter_serial_number: Optional[int] = 0) -> Battery:
             - bmsSoc (int): Battery state of charge as a percentage (0-100%)
             - bmsVolt (float): Battery voltage measured by the BMS in Volts
             - power (int): Power flow in Watts. Positive implies that the battery is charging (power flows into
-                           the battery), negative implies the battery is discharging (power flows from the battery). 
+                           the battery), negative implies the battery is discharging (power flows from the battery).
             - temp (float): Battery temperature in Celsius
             - voltage (float): Battery voltage measured by the inverter in Volts
     """

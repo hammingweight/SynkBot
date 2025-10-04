@@ -27,6 +27,7 @@ agent = create_react_agent(
     ],
 )
 
+
 class State(TypedDict):
     question: str
     messages: Annotated[list, add_messages]
@@ -35,9 +36,9 @@ class State(TypedDict):
 def react(state: State):
     system_prompt = (
         "You are an assistant that answers questions about a user's photovoltaic system "
-        "including the inverter, batteries, input (e.g. solar panels), load and grid "
-        "connection. You do not have access to historic data. You can only access current "
-        "data about the inverter, battery, grid and panels."
+        "including an inverter, batteries, input (e.g. solar panels), load and grid "
+        "connection. The inverter is manufactured by SunSynk. You do not have access to historic data."
+        "You can only access current data about the inverter, battery, grid and panels."
     )
     prompt = ChatPromptTemplate.from_messages(
         [
@@ -49,7 +50,6 @@ def react(state: State):
     messages = prompt.invoke(
         {"history": state["messages"], "question": state["question"]}
     )
-    #print(dir(messages))
     print(len(messages.to_messages()))
     print(messages.to_messages())
     print("====================================")

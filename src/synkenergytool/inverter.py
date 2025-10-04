@@ -8,9 +8,13 @@ class Inverter(BaseModel):
     ratedPower: int = Field(
         description="The maximum power (W) that the inverter can supply"
     )
-    loadPower: int = Field(description="The power being supplied by the inverter to the load, e.g. the home")
+    loadPower: int = Field(
+        description="The power being supplied by the inverter to the load, e.g. the home"
+    )
     batteryPower: int = Field(description="The power flowing to or from the inverter")
-    inputPower: int = Field(description="The power coming from the inputs (e.g. solar panels)")
+    inputPower: int = Field(
+        description="The power coming from the inputs (e.g. solar panels)"
+    )
     gridPower: int = Field(description="The power flowing to or from the grid")
     batteryMinimumSoCLimit: int = Field(description="The battery discharge limit")
     powerEssentialOnly: bool = Field(

@@ -1,6 +1,5 @@
 import uuid
 import streamlit as st
-from langchain_core.messages import HumanMessage
 
 from synkenergytool import chatbot
 
@@ -19,7 +18,7 @@ st.markdown(
     unsafe_allow_html=True,
 )
 st.markdown(
-    "<center><h4>An AI Chatbot for talking to your SunSynk Inverter 🌞</h4></center>",
+    "<center><h4>An AI Chatbot for talking to your SunSynk® Inverter 🌞</h4></center>",
     unsafe_allow_html=True,
 )
 
