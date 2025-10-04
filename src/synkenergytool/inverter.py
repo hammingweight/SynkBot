@@ -8,7 +8,10 @@ class Inverter(BaseModel):
     ratedPower: int = Field(
         description="The maximum power (W) that the inverter can supply"
     )
-    power: int = Field(description="The power being supplied by the inverter")
+    loadPower: int = Field(description="The power being supplied by the inverter to the load, e.g. the home")
+    batteryPower: int = Field(description="The power flowing to or from the inverter")
+    inputPower: int = Field(description="The power coming from the inputs (e.g. solar panels)")
+    gridPower: int = Field(description="The power flowing to or from the grid")
     batteryMinimumSoCLimit: int = Field(description="The battery discharge limit")
     powerEssentialOnly: bool = Field(
         description="True if the inverter powers only non-essential loads"
@@ -28,7 +31,10 @@ def inverter_settings(inverter_serial_number: Optional[int] = 0) -> Inverter:
     Returns:
         Inverter: An Inverter object containing the following fields:
             - ratedPower (int): The maximum power (in watts) that the inverter can supply.
-            - power (int): The current power being supplied by the inverter.
+            - loadPower (int): The current power being supplied by the inverter to the load, e.g. the home.
+            - batteryPower(int): The power flowing to or from the battery.
+            - inputPower(int): The power coming from the inputs, e.g. solar panels.
+            - gridPower(int): The power flowing to or from the grid.
             - batteryMinimumSoCLimit (int): The minimum state of charge limit for battery discharge.
             - powerEssentialOnly (bool): Indicates if the inverter is powering only essential loads.
               Non-essential loads are typically hot water cyclinders/geysers and stoves and ovens.
@@ -39,7 +45,6 @@ def inverter_settings(inverter_serial_number: Optional[int] = 0) -> Inverter:
         cmd += " -i " + str(inverter_serial_number)
     res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
     res = json.loads(res.stdout)
-
     inverter = {}
     inverter["batteryMinimumSoCLimit"] = res["battery-capacity"]
     inverter["powerEssentialOnly"] = res["essential-only"] == "on"
@@ -50,9 +55,29 @@ def inverter_settings(inverter_serial_number: Optional[int] = 0) -> Inverter:
         cmd += " -i " + str(inverter_serial_number)
     res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
     res = json.loads(res.stdout)
-
     inverter["ratedPower"] = res["ratePower"]
-    inverter["power"] = res["pac"]
+    inverter["inputPower"] = res["pac"]
+
+    cmd = "synkctl load get --short"
+    if inverter_serial_number:
+        cmd += " -i " + str(inverter_serial_number)
+    res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    res = json.loads(res.stdout)
+    inverter["loadPower"] = res["totalPower"]
+
+    cmd = "synkctl battery get --short"
+    if inverter_serial_number:
+        cmd += " -i " + str(inverter_serial_number)
+    res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    res = json.loads(res.stdout)
+    inverter["batteryPower"] = res["power"]
+
+    cmd = "synkctl grid get --short"
+    if inverter_serial_number:
+        cmd += " -i " + str(inverter_serial_number)
+    res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    res = json.loads(res.stdout)
+    inverter["gridPower"] = res["pac"]
 
     return Inverter(**inverter)
 
