@@ -22,6 +22,20 @@ tools = [
     inverter_update,
     load_state,
 ]
+system_prompt = (
+    "You are an assistant that answers questions about a user's photovoltaic system "
+    "including an inverter, batteries, input (e.g. solar panels), load and grid "
+    "connection. The inverter is manufactured by SunSynk. You do not have access to historic data, "
+    "aggregate data or trends. You can only access current, instantaneous data about the inverter, "
+    "battery, grid and panels."
+)
+prompt = ChatPromptTemplate.from_messages(
+    [
+        ("system", system_prompt),
+        ("placeholder", "{history}"),
+        ("human", "{question}"),
+    ]
+)
 agent = create_react_agent(model=llm, tools=tools)
 
 
@@ -31,28 +45,10 @@ class State(TypedDict):
 
 
 def react(state: State):
-    system_prompt = (
-        "You are an assistant that answers questions about a user's photovoltaic system "
-        "including an inverter, batteries, input (e.g. solar panels), load and grid "
-        "connection. The inverter is manufactured by SunSynk. You do not have access to historic data, "
-        "aggregate data or trends. You can only access current, instantaneous data about the inverter, "
-        "battery, grid and panels."
-    )
-    prompt = ChatPromptTemplate.from_messages(
-        [
-            ("system", system_prompt),
-            ("placeholder", "{history}"),
-            ("human", "{question}"),
-        ]
-    )
-
-    messages = prompt.invoke(
-        {"history": state["messages"], "question": state["question"]}
-    )
-
+    input = prompt.invoke({"question": state["question"], "history": state["messages"]})
     # Write the messages to the console so the user can see the reasoning
     # and acting.
-    for event in agent.stream({"messages": messages.to_messages()}):
+    for event in agent.stream(input):
         message = event["messages"][-1]
         message.pretty_print()
 
