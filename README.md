@@ -94,4 +94,6 @@ This value represents the current performance relative to the panels' maximum po
 
 ```
 
+It's possible to change settings as well. For example, you could instruct the chatbot "If the battery is more than 50 full and the panels are producing at least 1 kW, then ensure that non-essential circuits are being powered by
++the inverter."
 
