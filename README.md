@@ -84,9 +84,6 @@ Wait, but I should check if the units are correct. The power values are in watts
 I should present this as the current efficiency. Also, note that efficiency can vary based on factors like temperature and light intensity, but since the user is asking for the current efficiency, this calculation should be accurate based on the latest data.
 </think>
 
-It's possible to change settings as well. For example, you could instruct the chatbot "If the battery is more than 50 full and the panels are producing at least 1 kW, then ensure that non-essential circuits are being powered by
-the inverter."
-
 The current efficiency of the solar panels is calculated as follows:
 
 **Efficiency = (Current Power / Peak Power) × 100**  
