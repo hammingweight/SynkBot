@@ -45,13 +45,16 @@ class State(TypedDict):
 
 
 def react(state: State):
+    index = len(state["messages"]) + 1
     # Write the messages to the console so the user can see the reasoning
     # and acting.
     for event in agent.stream(
         {"question": state["question"], "history": state["messages"]}
     ):
-        message = event["messages"][-1]
-        message.pretty_print()
+        while index < len(event["messages"]):
+            message = event["messages"][index]
+            message.pretty_print()
+            index += 1
 
     # Add the user's question and the AI's message to the history.
     return {"messages": [HumanMessage(state["question"]), message]}
