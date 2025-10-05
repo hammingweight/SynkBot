@@ -1,7 +1,32 @@
 # SynkBot
+**SynkBot** is a chatbot for communicating with a SunSynk® inverter using Ollama, a Qwen3 LLM and [synkctl](https://github.com/hammingweight/synkctl).
+
+## Installing dependencies
+Install [synkctl](https://github.com/hammingweight/synkctl/releases/tag/v1.13.0) and follow the configuration instructions. Check that it works
+
+```bash
+synkctl configuration verify
+```
+
+Create a python virtual environment
+
+```bash
+git clone https://github.com/hammingweight/SynkBot.git
+cd SynkBot
+python3 -m venv venv
+source venv/bin/activate
+pip install -r requirements.txt
+```
+
+Install Ollama and the Qwen3 LLM
+
+```bash
+curl -fsSL https://ollama.com/install.sh | OLLAMA_VERSION=0.11.4 sh 
+ollama pull qwen3:4b-q4_K_M
+```
 
 ## Running SynkBot
-SynkBot is a [Streamlit application](https://streamlit.io); to run it
+**SynkBot** is a [Streamlit application](https://streamlit.io); to run it
 
 ```bash
 source venv/bin/activate
