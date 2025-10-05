@@ -2,7 +2,8 @@ import json
 import subprocess
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, Union
+from .errors import Error
 
 
 class Input(BaseModel):
@@ -11,7 +12,7 @@ class Input(BaseModel):
 
 
 @tool(parse_docstring=True)
-def input_state(inverter_serial_number: Optional[int] = 0) -> Input:
+def input_state(inverter_serial_number: Optional[int] = 0) -> Union[Input, Error]:
     """
     Retrieves the current input state (e.g. for solar panels) for a specified inverter.
 
@@ -22,7 +23,8 @@ def input_state(inverter_serial_number: Optional[int] = 0) -> Input:
         inverter_serial_number (Optional[int]): The serial number of the inverter. Defaults to 0.
 
     Returns:
-        Input: An Input object containing the current power and peak power values.
+        Union[Input, Error]: Either an Input object or an Error if the request failed. An Input
+        object contains the current power and peak power values.
     """
     cmd = "synkctl input get --short"
     if inverter_serial_number:
@@ -36,6 +38,9 @@ def input_state(inverter_serial_number: Optional[int] = 0) -> Input:
     if inverter_serial_number:
         cmd += " -i " + str(inverter_serial_number)
     res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
-    input["peakPower"] = int(json.loads(res.stdout)["totalPower"] * 1000)
+    if res.returncode != 0:
+        message = res.stderr.split("\n")[0]
+        return Error(message=message)
 
+    input["peakPower"] = int(json.loads(res.stdout)["totalPower"] * 1000)
     return Input(**input)

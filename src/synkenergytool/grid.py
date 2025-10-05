@@ -2,7 +2,8 @@ import json
 import subprocess
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, Union
+from .errors import Error
 
 
 class Grid(BaseModel):
@@ -11,7 +12,7 @@ class Grid(BaseModel):
 
 
 @tool(parse_docstring=True)
-def grid_state(inverter_serial_number: Optional[int] = 0) -> Grid:
+def grid_state(inverter_serial_number: Optional[int] = 0) -> Union[Grid, Error]:
     """
     Retrieves the current grid state for a specified inverter.
 
@@ -20,12 +21,16 @@ def grid_state(inverter_serial_number: Optional[int] = 0) -> Grid:
             Defaults to 0, which queries the default inverter.
 
     Returns:
-        Grid: An instance of the Grid class containing the grid power (`power`) and relay status (`isUp`).
+        Union[Grid, Error]: Either a Grid object containing the grid state information, or an Error object
+        if the request failed. A  Grid object contains the grid power (`power`) and relay status (`isUp`).
     """
     cmd = "synkctl grid get --short"
     if inverter_serial_number:
         cmd += " -i " + str(inverter_serial_number)
     res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    if res.returncode != 0:
+        message = res.stderr.split("\n")[0]
+        return Error(message=message)
 
     grid = {}
     grid["power"] = json.loads(res.stdout)["pac"]

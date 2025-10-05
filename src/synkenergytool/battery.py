@@ -1,8 +1,9 @@
 import json
 import subprocess
-from typing import Optional
+from typing import Optional, Union
 from pydantic import BaseModel, Field
 from langchain_core.tools import tool
+from .errors import Error
 
 
 class Battery(BaseModel):
@@ -25,7 +26,9 @@ class Battery(BaseModel):
 
 
 @tool(parse_docstring=True)
-def battery_state(inverter_serial_number: Optional[int] = 0) -> Battery:
+def battery_state(
+    inverter_serial_number: Optional[int] = 0,
+) -> Union[Battery, Error]:
     """
     Gets the state of a battery including the battery state of charge, temperature, voltage, whether the battery is
     charging or discharging and the power flow into the battery or the power flow from the battery.
@@ -35,7 +38,8 @@ def battery_state(inverter_serial_number: Optional[int] = 0) -> Battery:
         If not provided, returns the battery state for the default inverter.
 
     Returns:
-        Battery: A Battery object containing the following fields:
+        Union[Battery, Error]: Either a Battery object containing the battery state information, or an Error object
+        if the request failed. The Battery object contains the following fields::
             - bmsSoc (int): Battery state of charge as a percentage (0-100%)
             - bmsVolt (float): Battery voltage measured by the BMS in Volts
             - power (int): Power flow in Watts. Positive implies that the battery is charging (power flows into
@@ -47,6 +51,9 @@ def battery_state(inverter_serial_number: Optional[int] = 0) -> Battery:
     if inverter_serial_number:
         cmd += " -i " + str(inverter_serial_number)
     res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    if res.returncode != 0:
+        message = res.stderr.split("\n")[0]
+        return Error(message=message)
 
     b = json.loads(res.stdout)
     battery = {}

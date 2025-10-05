@@ -36,7 +36,7 @@ prompt = ChatPromptTemplate.from_messages(
         ("human", "{question}"),
     ]
 )
-agent = create_react_agent(model=llm, tools=tools)
+agent = prompt | create_react_agent(model=llm, tools=tools)
 
 
 class State(TypedDict):
@@ -45,10 +45,11 @@ class State(TypedDict):
 
 
 def react(state: State):
-    input = prompt.invoke({"question": state["question"], "history": state["messages"]})
     # Write the messages to the console so the user can see the reasoning
     # and acting.
-    for event in agent.stream(input):
+    for event in agent.stream(
+        {"question": state["question"], "history": state["messages"]}
+    ):
         message = event["messages"][-1]
         message.pretty_print()
 

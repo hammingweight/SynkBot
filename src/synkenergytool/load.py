@@ -3,6 +3,7 @@ import subprocess
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
 from typing import Optional
+from .errors import Error
 
 
 class Load(BaseModel):
@@ -19,12 +20,15 @@ def load_state(inverter_serial_number: Optional[int] = 0) -> Load:
             Defaults to 0, which queries the default inverter.
 
     Returns:
-        Load: An instance of the Load class containing the load power (`power`).
+        Either a Load object or an Error if the request fails. A Load object ontains the load power (`power`).
     """
     cmd = "synkctl load get --short"
     if inverter_serial_number:
         cmd += " -i " + str(inverter_serial_number)
     res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    if res.returncode != 0:
+        message = res.stderr.split("\n")[0]
+        return Error(message=message)
 
     load = {}
     load["power"] = json.loads(res.stdout)["totalPower"]

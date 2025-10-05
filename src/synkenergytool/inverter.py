@@ -2,7 +2,8 @@ import json
 import subprocess
 from langchain_core.tools import tool
 from pydantic import BaseModel, Field
-from typing import Optional
+from typing import Optional, Union
+from .errors import Error
 
 
 class Inverter(BaseModel):
@@ -27,7 +28,9 @@ class Inverter(BaseModel):
 
 
 @tool(parse_docstring=True)
-def inverter_settings(inverter_serial_number: Optional[int] = 0) -> Inverter:
+def inverter_settings(
+    inverter_serial_number: Optional[int] = 0,
+) -> Union[Inverter, Error]:
     """
     Retrieves inverter load settings using the synkctl CLI tool.
 
@@ -35,7 +38,7 @@ def inverter_settings(inverter_serial_number: Optional[int] = 0) -> Inverter:
         inverter_serial_number (Optional[int], optional): Serial number of the inverter to query. Defaults to 0.
 
     Returns:
-        Inverter: An Inverter object containing the following fields:
+        Either an Inverter object or an Error if the request failed, An Inverter object contains the following fields:
             - ratedPower (int): The maximum power (in watts) that the inverter can supply.
             - loadPower (int): The current power being supplied by the inverter to the load, e.g. the home.
             - batteryPower(int): The power flowing to or from the battery.
@@ -60,6 +63,9 @@ def inverter_settings(inverter_serial_number: Optional[int] = 0) -> Inverter:
     if inverter_serial_number:
         cmd += " -i " + str(inverter_serial_number)
     res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    if res.returncode != 0:
+        message = res.stderr.split("\n")[0]
+        return Error(message=message)
     res = json.loads(res.stdout)
     inverter["ratedPower"] = res["ratePower"]
     inverter["inputPower"] = res["pac"]
@@ -68,6 +74,9 @@ def inverter_settings(inverter_serial_number: Optional[int] = 0) -> Inverter:
     if inverter_serial_number:
         cmd += " -i " + str(inverter_serial_number)
     res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    if res.returncode != 0:
+        message = res.stderr.split("\n")[0]
+        return Error(message=message)
     res = json.loads(res.stdout)
     inverter["loadPower"] = res["totalPower"]
 
@@ -75,6 +84,9 @@ def inverter_settings(inverter_serial_number: Optional[int] = 0) -> Inverter:
     if inverter_serial_number:
         cmd += " -i " + str(inverter_serial_number)
     res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    if res.returncode != 0:
+        message = res.stderr.split("\n")[0]
+        return Error(message=message)
     res = json.loads(res.stdout)
     inverter["batteryPower"] = res["power"]
 
@@ -82,6 +94,9 @@ def inverter_settings(inverter_serial_number: Optional[int] = 0) -> Inverter:
     if inverter_serial_number:
         cmd += " -i " + str(inverter_serial_number)
     res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    if res.returncode != 0:
+        message = res.stderr.split("\n")[0]
+        return Error(message=message)
     res = json.loads(res.stdout)
     inverter["gridPower"] = res["pac"]
 
