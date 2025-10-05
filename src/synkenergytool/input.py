@@ -30,6 +30,9 @@ def input_state(inverter_serial_number: Optional[int] = 0) -> Union[Input, Error
     if inverter_serial_number:
         cmd += " -i " + str(inverter_serial_number)
     res = subprocess.run(cmd, shell=True, capture_output=True, text=True)
+    if res.returncode != 0:
+        message = res.stderr.split("\n")[0]
+        return Error(message=message)
 
     input = {}
     input["power"] = json.loads(res.stdout)["pac"]
