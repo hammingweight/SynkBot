@@ -1,7 +1,7 @@
 import uuid
 import streamlit as st
 
-from synkenergytool import chatbot
+from synkbot import chatbot
 
 
 def remove_thinking_tags(message):
@@ -12,9 +12,9 @@ def remove_thinking_tags(message):
     return message
 
 
-st.set_page_config(page_title="SynkEnergyTool", page_icon="🇮🌞")
+st.set_page_config(page_title="SynkBot", page_icon="🇮🌞")
 st.markdown(
-    "<h2 style='text-align: center;'>Welcome to SynkEnergyTool!</h2>",
+    "<h2 style='text-align: center;'>Welcome to SynkBot!</h2>",
     unsafe_allow_html=True,
 )
 st.markdown(
