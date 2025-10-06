@@ -4,6 +4,8 @@ import streamlit as st
 from synkbot import chatbot
 
 
+# Qwen3 prefixes its answer with thinking. We don't want to pollute
+# the output with that detail.
 def remove_thinking_tags(message):
     message = message.strip()
     if message.startswith("<think>"):

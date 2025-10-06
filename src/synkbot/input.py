@@ -20,7 +20,8 @@ def input_state(inverter_serial_number: Optional[int] = 0) -> Union[Input, Error
     identified by the given serial number. If no serial number is provided, defaults to 0.
 
     Args:
-        inverter_serial_number (Optional[int]): The serial number of the inverter. Defaults to 0.
+        inverter_serial_number (Optional[int]): The serial number of the inverter.
+        If not provided, returns the input state for the default inverter.
 
     Returns:
         Union[Input, Error]: Either an Input object or an Error if the request failed. An Input

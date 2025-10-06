@@ -18,7 +18,7 @@ def grid_state(inverter_serial_number: Optional[int] = 0) -> Union[Grid, Error]:
 
     Args:
         inverter_serial_number (Optional[int], optional): The serial number of the inverter to query.
-            Defaults to 0, which queries the default inverter.
+            If not provided, returns the grid state for the default inverter.
 
     Returns:
         Union[Grid, Error]: Either a Grid object containing the grid state information, or an Error object
