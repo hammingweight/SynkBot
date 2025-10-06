@@ -32,7 +32,7 @@ def inverter_settings(
     inverter_serial_number: Optional[int] = 0,
 ) -> Union[Inverter, Error]:
     """
-    Retrieves inverter settings.
+    Retrieves inverter settings using the synkctl CLI tool.
 
     Args:
         inverter_serial_number (Optional[int], optional): Serial number of the inverter to query. Defaults to 0.
@@ -47,7 +47,6 @@ def inverter_settings(
             - batteryMinimumSoCLimit (int): The minimum state of charge limit for battery discharge.
             - powerEssentialOnly (bool): Indicates if the inverter is powering only essential loads.
               Non-essential loads are typically hot water cyclinders/geysers and stoves and ovens.
-              If this flag is True, non-essential loads are powered by the grid if the grid is up.
             - gridChargingOfBatteryAllowed (bool): Indicates if the battery can be recharged from the grid.
     """
     cmd = "synkctl inverter settings"
