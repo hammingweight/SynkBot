@@ -33,7 +33,7 @@ prompt = ChatPromptTemplate.from_messages(
     [
         ("system", system_prompt),
         ("placeholder", "{history}"),
-        ("human", "{question}"),
+        ("human", "{question}. Remember: answer concisely."),
     ]
 )
 agent = prompt | create_react_agent(model=llm, tools=tools)
