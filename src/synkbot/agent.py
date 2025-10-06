@@ -27,7 +27,7 @@ system_prompt = (
     "including an inverter, batteries, input (e.g. solar panels), load and grid "
     "connection. The inverter is manufactured by SunSynk. You do not have access to historic data, "
     "aggregate data or trends. You can only access current, instantaneous data about the inverter, "
-    "battery, grid and panels."
+    "battery, grid and panels. Answer concisely."
 )
 prompt = ChatPromptTemplate.from_messages(
     [
