@@ -22,7 +22,7 @@ class Inverter(BaseModel):
     powerEssentialOnly: bool = Field(
         description="True if the inverter powers only non-essential loads"
     )
-    gridCharge: bool = Field(
+    gridChargingOfBatteryAllowed: bool = Field(
         description="True if the battery can be recharged from the grid"
     )
 
@@ -32,7 +32,7 @@ def inverter_settings(
     inverter_serial_number: Optional[int] = 0,
 ) -> Union[Inverter, Error]:
     """
-    Retrieves inverter load settings using the synkctl CLI tool.
+    Retrieves inverter settings using the synkctl CLI tool.
 
     Args:
         inverter_serial_number (Optional[int], optional): Serial number of the inverter to query. Defaults to 0.
@@ -47,7 +47,7 @@ def inverter_settings(
             - batteryMinimumSoCLimit (int): The minimum state of charge limit for battery discharge.
             - powerEssentialOnly (bool): Indicates if the inverter is powering only essential loads.
               Non-essential loads are typically hot water cyclinders/geysers and stoves and ovens.
-            - gridCharge (bool): Indicates if the battery can be recharged from the grid.
+            - gridChargingOfBatteryAllowed (bool): Indicates if the battery can be recharged from the grid.
     """
     cmd = "synkctl inverter settings"
     if inverter_serial_number:
@@ -57,7 +57,7 @@ def inverter_settings(
     inverter = {}
     inverter["batteryMinimumSoCLimit"] = res["battery-capacity"]
     inverter["powerEssentialOnly"] = res["essential-only"] == "on"
-    inverter["gridCharge"] = res["grid-charge"] == "on"
+    inverter["gridChargingOfBatteryAllowed"] = res["grid-charge"] == "on"
 
     cmd = "synkctl inverter details"
     if inverter_serial_number:
@@ -108,7 +108,7 @@ def inverter_update(
     inverter_serial_number: Optional[int] = 0,
     minimum_battery_soc: Optional[int] = None,
     essential_only: Optional[bool] = None,
-    grid_charge: Optional[bool] = None,
+    grid_charge_of_battery_allowed: Optional[bool] = None,
 ):
     """
     Updates inverter settings.
@@ -119,8 +119,8 @@ def inverter_update(
                                                        option is omitted.
         essential_only (Optional[bool], optional): If True, enables essential-only mode; if False, disables it; if
                                                    None, this option is omitted.
-        grid_charge (Optional[bool], optional): If True, enables grid charging; if False, disables it; if None, this
-                                                option is omitted.
+        grid_charge_of_battery_allowed (Optional[bool], optional): If True, enables grid charging; if False,
+                                                                   disables it; if None, this option is omitted.
     """
     cmd = "synkctl inverter update"
     if inverter_serial_number:
@@ -136,9 +136,9 @@ def inverter_update(
         else:
             cmd += "off"
 
-    if grid_charge is not None:
+    if grid_charge_of_battery_allowed is not None:
         cmd += " --grid-charge "
-        if grid_charge:
+        if grid_charge_of_battery_allowed:
             cmd += "on"
         else:
             cmd += "off"
