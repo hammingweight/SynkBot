@@ -4,7 +4,7 @@ from typing import Optional, Union
 from pydantic import BaseModel, Field
 from langchain_core.tools import tool
 from .errors import Error
-from .power import Power
+
 
 class Battery(BaseModel):
     bmsSoc: int = Field(description="The battery's state of charge as a percentage")
@@ -14,7 +14,13 @@ class Battery(BaseModel):
     isCharging: bool = Field(
         description="True if the battery is charging; False if discharging"
     )
-    power: Power = Field(description="The power flowing into or out of the battery in Watts.")
+    power: int = Field(
+        description="""
+                    The power flowing into or out of the battery in Watts.
+                    If positive, power is flowing into the battery; i.e. charging.
+                    If negative, power is flowing from the battery; i.e. discharging.
+                    """
+    )
     temp: float = Field(description="The battery temperature in Celsius")
     voltage: float = Field(description="The battery voltage according to the inverter")
 
@@ -36,7 +42,8 @@ def battery_state(
         if the request failed. The Battery object contains the following fields::
             - bmsSoc (int): Battery state of charge as a percentage (0-100%)
             - bmsVolt (float): Battery voltage measured by the BMS in Volts
-            - power (Power): Power flow in Watts and the direction that the power is flowing.
+            - power (int): Power flow in Watts. Positive implies that the battery is charging (power flows into
+                           the battery), negative implies the battery is discharging (power flows from the battery).
             - temp (float): Battery temperature in Celsius
             - voltage (float): Battery voltage measured by the inverter in Volts
     """
@@ -53,9 +60,7 @@ def battery_state(
     for k in b.keys():
         if k in Battery.model_fields.keys():
             battery[k] = b[k]
-    if b["power"] < 0:
-        battery["power"] = Power(power=-b["power"], direction="Power is flowing into the battery")
-    else:
-        battery["power"] = Power(power=b["power"], direction="Power is flowing from the battery")
+    battery["isCharging"] = b["power"] < 0
+    battery["power"] = -b["power"]
 
     return Battery(**battery)
