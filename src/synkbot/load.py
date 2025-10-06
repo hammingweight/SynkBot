@@ -20,7 +20,7 @@ def load_state(inverter_serial_number: Optional[int] = 0) -> Load:
             Defaults to 0, which queries the default inverter.
 
     Returns:
-        Either a Load object or an Error if the request fails. A Load object ontains the load power (`power`).
+        Either a Load object or an Error if the request fails. A Load object contains the load power (`power`).
     """
     cmd = "synkctl load get --short"
     if inverter_serial_number:
