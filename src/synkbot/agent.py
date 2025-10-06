@@ -27,13 +27,17 @@ system_prompt = (
     "including the inverter, battery, input (e.g. solar panels), grid connection and the load."
     "The inverter is manufactured by SunSynk. You do not have access to historic data, "
     "aggregate data or trends. You can only access current, instantaneous data about the inverter, "
-    "battery, solar panels, grid and load. Answer questions or instructions concisely."
+    "battery, solar panels, grid and load. Use the tools to validate conjectures, if necessary, and "
+    "then answer concisely."
 )
 prompt = ChatPromptTemplate.from_messages(
     [
         ("system", system_prompt),
         ("placeholder", "{history}"),
-        ("human", "{question}\nRemember: Answer concisely."),
+        (
+            "human",
+            "{question}\nRemember: Use tools if they're helpful and then answer concisely.",
+        ),
     ]
 )
 agent = prompt | create_react_agent(model=llm, tools=tools)
