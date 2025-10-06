@@ -30,7 +30,7 @@ def battery_state(
     inverter_serial_number: Optional[int] = 0,
 ) -> Union[Battery, Error]:
     """
-    Gets the state of a battery including the state of charge, temperature, voltage, whether the battery is
+    Gets the state of a battery including the battery state of charge, temperature, voltage, whether the battery is
     charging or discharging and the power flow into the battery or the power flow from the battery.
 
     Args:

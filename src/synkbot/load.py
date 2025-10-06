@@ -17,7 +17,7 @@ def load_state(inverter_serial_number: Optional[int] = 0) -> Load:
 
     Args:
         inverter_serial_number (Optional[int], optional): The serial number of the inverter to query.
-        If not provided, returns the load state for the default inverter.
+            Defaults to 0, which queries the default inverter.
 
     Returns:
         Either a Load object or an Error if the request fails. A Load object ontains the load power (`power`).

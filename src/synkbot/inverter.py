@@ -35,8 +35,7 @@ def inverter_settings(
     Retrieves inverter settings using the synkctl CLI tool.
 
     Args:
-        inverter_serial_number (Optional[int], optional): Serial number of the inverter to query.
-        If not provided, returns the inverter state for the default inverter.
+        inverter_serial_number (Optional[int], optional): Serial number of the inverter to query. Defaults to 0.
 
     Returns:
         Either an Inverter object or an Error if the request failed, An Inverter object contains the following fields:
@@ -115,8 +114,7 @@ def inverter_update(
     Updates inverter settings.
 
     Args:
-        inverter_serial_number (Optional[int], optional): Serial number of the inverter.
-        If not provided, updates the settings of the default inverter.
+        inverter_serial_number (Optional[int], optional): Serial number of the inverter. Defaults to 0.
         minimum_battery_soc (Optional[int], optional): Minimum battery state of charge (SOC) to set. If None, this
                                                        option is omitted.
         essential_only (Optional[bool], optional): If True, enables essential-only mode; if False, disables it; if
